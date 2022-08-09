@@ -4,7 +4,7 @@ import Avatar from '../img/avatar.png'
 import { motion } from 'framer-motion'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { app } from '../firebaseConfig';
-import { MdShoppingCart, MdAdd, MdLogout, MdPassword } from 'react-icons/md'
+import { MdAdd, MdLogout, MdPassword } from 'react-icons/md'
 import { AiFillInfoCircle } from 'react-icons/ai'
 import { MdShoppingBasket } from 'react-icons/md'
 import { Link } from 'react-router-dom'
@@ -31,8 +31,16 @@ const Header = () => {
                setIsMenu(!isMenu)
           }
      }
+     const logout = () => {
+          setIsMenu(false)
+          localStorage.clear()
+          dispatch({
+               type: actionType.SET_USER,
+               user: null,
+          })
+     }
      return (
-          <div className='fixed z-50 w-screen p-3 px-4 md:p-6 md:px-16' >
+          <div className='fixed z-50 w-screen p-3 px-4 md:p-6 md:px-16 bg-primary' >
                {/*-----------Desktop----------------*/}
                <div className='hidden md:flex w-full h-full items-center justify-between'>
                     <Link to={'/'} className='flex items-center gap-2'>
@@ -85,29 +93,35 @@ const Header = () => {
                               {
                                    isMenu && (
                                         <motion.div
-                                             initial={{ opacity: 0, scale: 0.6 }}
+                                             initial={{ opacity: 10, scale: 0.6 }}
                                              animate={{ opacity: 1, scale: 1 }}
-                                             exit={{ opacity: 0, scale: 0.6 }}
+                                             exit={{ opacity: 10, scale: 0.6 }}
                                              className='w-40 h-fitcontext bg-primary flex shadow-xl 
                                              flex-col rounded-lg absolute top-11 right-0'>
                                              {
                                                   user && user.email === "phannguyen7565@gmail.com" && (
                                                        <Link to={'/createItem'}>
                                                             <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
-                                                  hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
+                                                  hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'
+                                                                 onClick={() => setIsMenu(false)}
+                                                            >
                                                                  New Account <MdAdd />
                                                             </p>
                                                        </Link>
                                                   )
                                              }
+
                                              <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
-                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
+                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'
+                                                  onClick={logout}
+                                             >
                                                   Logout <MdLogout /></p>
                                              <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
                                              hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
                                                   Information <AiFillInfoCircle /></p>
                                              <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
-                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
+                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'
+                                             >
                                                   Forget Password <MdPassword /></p>
                                         </motion.div>
                                    )
@@ -117,13 +131,22 @@ const Header = () => {
                </div>
                {/*-----------Mobile----------------*/}
                <div className='flex md:hidden w-full h-full flex items-center justify-between'>
+                    <div className='relative flex items-center justify-center'>
+                         <MdShoppingBasket className='text-textColor text-2xl cursor-pointer' />
+                         <div className='absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg 
+                                   items-center flex justify-center'>
+                              <p className='text-xs text-white font-semibold'>2</p>
+                         </div>
+                    </div>
                     <Link to={'/'} className='flex items-center gap-2'>
                          <img
                               src={Logo}
                               alt='logo'
                               className='w-10 object-contain'
                          />
-                         <p className='text-headingColor text-xl font-bold'>Chicken BoOm!!!</p>
+                         <p className='text-headingColor text-xl font-bold'>Chicken
+                              <span className='flex flex-col text-headingColor text-xl font-bold'> BoOm!!!</span>
+                         </p>
                     </Link>
                     <div className='relative'>
                          <motion.img
@@ -145,28 +168,46 @@ const Header = () => {
                                         {
                                              user && user.email === "phannguyen7565@gmail.com" && (
                                                   <Link to={'/createItem'}>
-                                                       <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
+                                                       <p className='text-base px-2 py-2 flex items-center gap-3 cursor-pointer 
                                                   hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
                                                             New Account <MdAdd />
                                                        </p>
                                                   </Link>
                                              )
                                         }
-                                        <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
-                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
+                                        <ul className='flex flex-col'>
+                                             <li className='text-base text-textColor hover:text-headingColor 
+                                   cursor-pointer transition-all ease-in-out duration-100 hover:bg-slate-100 px-4 py-2'>
+                                                  Home
+                                             </li>
+                                             <li className='text-base text-textColor hover:text-headingColor 
+                                   cursor-pointer transition-all ease-in-out duration-100 hover:bg-slate-100 px-4 py-2'>
+                                                  Menu
+                                             </li>
+                                             <li className='text-base text-textColor hover:text-headingColor 
+                                   cursor-pointer transition-all ease-in-out duration-100 hover:bg-slate-100 px-4 py-2'>
+                                                  About Us
+                                             </li>
+                                             <li className='text-base text-textColor hover:text-headingColor 
+                                   cursor-pointer transition-all ease-in-out duration-100 hover:bg-slate-100 px-4 py-2'>
+                                                  Service
+                                             </li>
+                                        </ul>
+                                        <p className='text-base px-2 py-2 flex items-center gap-3 cursor-pointer 
+                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'
+                                             onClick={logout}
+                                        >
                                              Logout <MdLogout /></p>
-                                        <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
+                                        <p className='text-base px-2 py-2 flex items-center gap-3 cursor-pointer 
                                              hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
                                              Information <AiFillInfoCircle /></p>
-                                        <p className='text-xs px-2 py-2 flex items-center gap-3 cursor-pointer 
-                                             hover:bg-slate-200 transition-all ease-in-out duration-100 text-textColor'>
-                                             Forget Password <MdPassword /></p>
+                                        <p className='text-base m-2 p-2 rounded-md shadow-md flex justify-center bg-gray-200 items-center gap-3 cursor-pointer 
+                                             hover:bg-slate-300 transition-all ease-in-out duration-100 text-textColor'
+                                        >
+                                             Forget <MdPassword /></p>
                                    </motion.div>
                               )
                          }
-                         {/* <p className='text-xs text-black drop-shadow-xl'>
-                                   {user ? user.displayName : ''}
-                              </p> */}
                     </div>
                </div>
           </div>
